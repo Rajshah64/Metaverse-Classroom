@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id       String @id @default(cuid())
+  username String @unique
+  password String
+  role     Role
+
+  avatarId String
+  avatar   Avatar @relation(fields: [avatarId], references: [id])
+
+  maps   Map[] // Maps created
+  spaces Space[] // Spaces created
+
+  joinedMaps   UserMap[] // Maps joined
+  joinedSpaces UserSpace[] // Spaces joined
+}
+
+model Avatar {
+  id       String  @id @default(cuid())
+  imageUrl String?
+  name     String?
+  users    User[]
+}
+
+model Map {
+  id        String  @id @default(cuid())
+  name      String
+  width     Int
+  height    Int
+  thumbnail String?
+
+  creatorId String
+  creator   User   @relation(fields: [creatorId], references: [id])
+
+  elements     MapElement[]
+  participants UserMap[]
+  spaces       Space[]
+}
+
+model Space {
+  id        String  @id @default(cuid())
+  name      String
+  width     Int
+  height    Int?
+  thumbnail String?
+
+  creatorId String
+  creator   User   @relation(fields: [creatorId], references: [id])
+
+  mapId String
+  map   Map    @relation(fields: [mapId], references: [id])
+
+  elements     SpaceElement[]
+  participants UserSpace[]
+}
+
+model Element {
+  id       String  @id @default(cuid())
+  imageUrl String
+  width    Int
+  height   Int
+  static   Boolean @default(false)
+
+  spaceElements SpaceElement[]
+  mapElements   MapElement[]
+}
+
+model SpaceElement {
+  id        String @id @default(cuid())
+  spaceId   String
+  elementId String
+  x         Int
+  y         Int
+
+  space   Space   @relation(fields: [spaceId], references: [id])
+  element Element @relation(fields: [elementId], references: [id])
+}
+
+model MapElement {
+  id        String @id @default(cuid())
+  mapId     String
+  elementId String
+  x         Int
+  y         Int
+
+  map     Map     @relation(fields: [mapId], references: [id])
+  element Element @relation(fields: [elementId], references: [id])
+}
+
+model UserMap {
+  id     String @id @default(cuid())
+  userId String
+  mapId  String
+
+  user User @relation(fields: [userId], references: [id])
+  map  Map  @relation(fields: [mapId], references: [id])
+}
+
+model UserSpace {
+  id      String @id @default(cuid())
+  userId  String
+  spaceId String
+
+  user  User  @relation(fields: [userId], references: [id])
+  space Space @relation(fields: [spaceId], references: [id])
+}
+
+enum Role {
+  Admin
+  User
+}

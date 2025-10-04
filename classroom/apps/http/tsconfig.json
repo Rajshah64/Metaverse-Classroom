@@ -15,21 +15,17 @@
 
     // Output helpers
     "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
+    "declaration": false,
+    "declarationMap": false,
 
     // Strictness
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
 
-    // React / Next.js
-    "jsx": "react-jsx",
-
     // Module handling
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "verbatimModuleSyntax": false, 
     "isolatedModules": true,
     "moduleDetection": "force",
     "skipLibCheck": true

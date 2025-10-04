@@ -1,5 +1,6 @@
 import express from "express"
 import { router } from "./routes/v1/index.js";
+import { prisma } from "db";
 const cors = require('cors');
 
 const app = express();
